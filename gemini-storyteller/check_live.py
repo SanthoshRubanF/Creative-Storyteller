@@ -11,8 +11,8 @@ async def check_live():
                 async for line in response.aiter_lines():
                     if line:
                         print(line)
-                        if "v10" in line:
-                            print("VERIFIED: Hitting V10 revision")
+                        if "v11" in line:
+                            print("VERIFIED: Hitting V11 revision")
                         if "error" in line.lower():
                             print(f"ERROR DETECTED: {line}")
     except Exception as e:
