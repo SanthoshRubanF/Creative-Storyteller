@@ -29,7 +29,7 @@ active_generations = asyncio.Semaphore(MAX_CONCURRENT_STORIES)
 async def lifespan(app: FastAPI):
     # Startup logic
     logger.info("Starting Gemini Creative Storyteller...")
-    logger.info("Models: gemini-2.0-flash-exp, imagegeneration@006")
+    logger.info("Models: gemini-2.0-flash, imagegeneration@006")
     yield
     # Shutdown logic
     logger.info("Shutting down Gemini Creative Storyteller...")
@@ -146,7 +146,7 @@ async def standalone_image_gen(request: ImageRequest):
 async def health_check():
     return {
         "status": "ok",
-        "model": "gemini-1.5-flash",
+        "model": "gemini-2.0-flash",
         "image_model": "imagegeneration@006",
         "version": "1.0.0"
     }

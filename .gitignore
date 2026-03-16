@@ -21,8 +21,8 @@ Thumbs.db
 !frontend/assets/*.webp
 
 # Project Specific
-gemini-storyteller/check_sdk.py
-gemini-storyteller/test_stream.py
-gemini-storyteller/test_image.png
-gemini-storyteller/deploy_output.log
-gemini-storyteller/server_diag.log
+backend/check_sdk.py
+backend/test_stream.py
+backend/test_image.png
+backend/deploy_output.log
+backend/server_diag.log

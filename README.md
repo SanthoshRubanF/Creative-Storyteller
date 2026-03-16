@@ -59,7 +59,7 @@ gcloud config set project [YOUR_PROJECT_ID]
 
 ### 2. Run Automation Script
 
-We'viewed_file provided a script that enables APIs, sets up IAM, and deploys the service:
+We provided a script that enables APIs, sets up IAM, and deploys the service:
 
 ```bash
 chmod +x deploy.sh
@@ -76,15 +76,3 @@ If you prefer manual setup, ensure your Cloud Run service account has these role
 ### 🌐 Frontend URL Update
 
 The Dockerfile is configured to serve the frontend directly. If you host the frontend separately, ensure `frontend/index.html` references your Cloud Run URL in the `fetch()` call.
-
----
-
-## 🧪 Verification
-
-Run the local test suite to ensure everything is humming:
-
-```bash
-python backend/test_local.py
-```
-
-This tests Health, Styles, SSE Streaming, and Standalone Image Generation.
