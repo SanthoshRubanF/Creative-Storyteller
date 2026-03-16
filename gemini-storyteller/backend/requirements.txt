@@ -1,0 +1,9 @@
+google-genai
+google-cloud-aiplatform
+fastapi
+uvicorn
+python-dotenv
+pillow
+httpx
+sse-starlette
+pydantic

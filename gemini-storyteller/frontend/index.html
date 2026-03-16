@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Creative Storyteller | Gemini Live</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&family=Georgia&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode Colors */
+            --bg-page: #faf9f6;
+            --bg-card: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dfe6e9;
+            --accent-fantasy: #6c5ce7;
+            --accent-scifi: #0984e3;
+            --accent-horror: #d63031;
+            --accent-children: #00b894;
+            --accent-noir: #2d3436;
+            --current-accent: var(--accent-fantasy);
+            --panel-left-width: 38%;
+            --panel-right-width: 62%;
+        }
+
+        @media (max-width: 1024px) {
+            :root {
+                --panel-left-width: 100%;
+                --panel-right-width: 100%;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-page: #0a0a0c;
+                --bg-card: #16161a;
+                --text-main: #f0f0f5;
+                --text-muted: #a0a0b0;
+                --border-color: #2d3436;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 100vh;
+        }
+
+        /* --- Layout --- */
+        .left-panel {
+            width: var(--panel-left-width);
+            padding: 40px;
+            border-right: 1px solid var(--border-color);
+            background: var(--bg-card);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .right-panel {
+            width: var(--panel-right-width);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- UI Elements --- */
+        h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 0; }
+        label { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+        
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        textarea:focus { outline: none; border-color: var(--current-accent); }
+
+        .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .style-btn {
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+        .style-btn.active { border-color: var(--current-accent); color: var(--current-accent); background: rgba(108, 92, 231, 0.05); }
+
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            padding: 6px 14px;
+            background: var(--bg-page);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .chip:hover { background: var(--border-color); }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            background: var(--text-main);
+            color: var(--bg-card);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .generate-btn:active { transform: scale(0.98); }
+
+        /* --- Story Rendering --- */
+        .story-content {
+            max-width: 650px;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 60px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            font-family: 'Georgia', serif;
+            color: #2c3e50;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            min-height: 80vh;
+        }
+        @media (prefers-color-scheme: dark) { .story-content { color: #e0e0e0; } }
+
+        .story-image { width: 100%; border-radius: 12px; margin: 2rem 0; opacity: 0; transition: opacity 0.8s ease; }
+        .image-caption { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: -1.5rem; margin-bottom: 2rem; }
+
+        .audio-badge {
+            background: var(--border-color);
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-style: italic;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin: 10px 0;
+            color: var(--text-muted);
+        }
+
+        .shimmer {
+            width: 100%;
+            height: 320px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--bg-page) 25%, var(--border-color) 50%, var(--bg-page) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        .actions { margin-top: 40px; display: flex; gap: 15px; display: none; }
+        .action-btn { background: var(--border-color); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+
+        /* --- Progress Bar --- */
+        .progress-container { display: none; flex-direction: column; gap: 8px; }
+        .progress-bar { height: 6px; background: var(--bg-page); border-radius: 3px; overflow: hidden; width: 100%; }
+        .progress-fill { height: 100%; width: 0%; background: var(--current-accent); transition: width 0.3s; }
+
+        .group { display: flex; flex-direction: column; gap: 8px; }
+        .inspiration-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .status-message { font-size: 0.85rem; color: var(--text-muted); text-align: center; }
+        .story-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; text-align: center; margin-bottom: 2rem; opacity: 0; transition: opacity 1s; }
+        .empty-state { text-align: center; margin-top: 100px; color: var(--text-muted); }
+        .shimmer-text { font-size: 0.9rem; color: var(--text-muted); }
+        .shimmer-alt { font-size: 0.8rem; font-style: italic; opacity: 0.6; }
+        .error-msg { color: #d63031; padding: 20px; border: 1px solid #d63031; border-radius: 8px; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+
+    <aside class="left-panel">
+        <h1>Create your story</h1>
+        <div class="group">
+            <label>STORY PROMPT</label>
+            <textarea id="promptInput" placeholder="A young engineer discovers an ancient AI in Chennai..."></textarea>
+        </div>
+
+        <div class="group">
+            <label>STYLE</label>
+            <div class="style-grid">
+                <button class="style-btn active" onclick="setStyle('fantasy')">Fantasy</button>
+                <button class="style-btn" onclick="setStyle('sci-fi')">Sci-Fi</button>
+                <button class="style-btn" onclick="setStyle('horror')">Horror</button>
+                <button class="style-btn" onclick="setStyle('children')">Children's</button>
+                <button class="style-btn" onclick="setStyle('noir')">Noir</button>
+            </div>
+        </div>
+
+        <div class="group">
+            <label>INSPIRATION</label>
+            <div class="chips">
+                <div class="chip" onclick="applyPrompt('Dragon in Tamil Nadu')">Dragon in Tamil Nadu</div>
+                <div class="chip" onclick="applyPrompt('AI awakens in 2087')">AI awakens in 2087</div>
+                <div class="chip" onclick="applyPrompt('Ghost in old mansion')">Ghost in old mansion</div>
+                <div class="chip" onclick="applyPrompt('Brave little robot')">Brave little robot</div>
+            </div>
+        </div>
+
+        <button class="generate-btn" id="genBtn" onclick="startGeneration()">Generate Story</button>
+
+        <div class="progress-container" id="progCont">
+            <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+            <div id="statusMsg" class="status-message">Wait for the muse...</div>
+        </div>
+    </aside>
+
+    <main class="right-panel">
+        <div class="story-content" id="storyArea">
+            <div class="empty-state">
+                Your story will materialize here...
+            </div>
+        </div>
+        
+        <div class="actions" id="actionArea">
+            <button class="action-btn" onclick="copyStory()">Copy Text</button>
+            <button class="action-btn" onclick="downloadStory()">Download PDF</button>
+        </div>
+    </main>
+
+    <script>
+        let currentStyle = 'fantasy';
+        let textQueue = [];
+        let isTyping = false;
+        let storyText = "";
+        
+        // --- UI Logic ---
+        function setStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const accentMap = {
+                fantasy: '#6c5ce7',
+                scifi: '#0984e3',
+                horror: '#d63031',
+                children: '#00b894',
+                noir: '#2d3436'
+            };
+            document.documentElement.style.setProperty('--current-accent', accentMap[style.replace('-', '')]);
+        }
+
+        function applyPrompt(text) {
+            document.getElementById('promptInput').value = text;
+        }
+
+        // --- SSE Manager ---
+        async function startGeneration() {
+            const prompt = document.getElementById('promptInput').value;
+            if (!prompt) return;
+
+            // UI State
+            document.getElementById('genBtn').disabled = true;
+            document.getElementById('progCont').style.display = 'flex';
+            document.getElementById('actionArea').style.display = 'none';
+            document.getElementById('storyArea').innerHTML = '';
+            document.getElementById('progFill').style.width = '10%';
+            
+            storyText = "";
+            textQueue = [];
+
+            try {
+                // Add a title placeholder
+                const container = document.getElementById('storyArea');
+                container.innerHTML = `<h2 class="story-title" id="storyTitle">${prompt}</h2>`;
+                const titleEl = document.getElementById('storyTitle');
+                setTimeout(() => titleEl.style.opacity = '1', 500);
+
+                const url = `/story/stream?prompt=${encodeURIComponent(prompt)}&style=${encodeURIComponent(currentStyle)}`;
+                const response = await fetch(url);
+
+                if (!response.ok) throw new Error("Connection failed");
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    
+                    buffer += decoder.decode(value);
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop(); // Keep partial
+
+                    for (const line of lines) {
+                        if (line.trim().startsWith('data: ')) {
+                            const data = JSON.parse(line.trim().slice(6));
+                            handleEvent(data);
+                        }
+                    }
+                }
+            } catch (err) {
+                document.getElementById('storyArea').innerHTML = `<div style="color: red">Error: ${err.message}</div>`;
+            } finally {
+                document.getElementById('genBtn').disabled = false;
+            }
+        }
+
+        function handleEvent(data) {
+            const container = document.getElementById('storyArea');
+            const status = document.getElementById('statusMsg');
+            const fill = document.getElementById('progFill');
+
+            switch(data.event || data.type) {
+                case 'story':
+                case 'text':
+                    const content = data.text || data.content;
+                    queueText(content);
+                    fill.style.width = '40%';
+                    break;
+                case 'image_loading':
+                    insertShimmer(data.alt);
+                    status.innerText = "Illustrating: " + data.alt.substring(0, 30) + "...";
+                    fill.style.width = '60%';
+                    break;
+                case 'image':
+                    replaceShimmer(data.data, data.alt);
+                    fill.style.width = '90%';
+                    break;
+                case 'audio_cue':
+                    insertAudio(data.description);
+                    break;
+                case 'status':
+                    if (data.type === 'done') {
+                        status.innerText = "Complete.";
+                        fill.style.width = '100%';
+                        document.getElementById('actionArea').style.display = 'flex';
+                    } else {
+                        status.innerText = data.message;
+                    }
+                    break;
+                case 'error':
+                    container.innerHTML += `<div class="error-msg">Backend Error: ${data.message}</div>`;
+                    break;
+            }
+        }
+
+        // --- Typewriter Effect ---
+        function queueText(text) {
+            storyText += text;
+            textQueue.push(...text.split(''));
+            if (!isTyping) typeNext();
+        }
+
+        function typeNext() {
+            if (textQueue.length === 0) {
+                isTyping = false;
+                return;
+            }
+
+            isTyping = true;
+            const char = textQueue.shift();
+            const container = document.getElementById('storyArea');
+            
+            // Handle paragraphs/newlines
+            if (char === '\n') {
+                container.innerHTML += '<br>';
+            } else {
+                container.innerHTML += char;
+            }
+
+            // Rhythm & Speed control
+            let delay = 18;
+            if (textQueue.length > 200) delay = 5; // Catch up
+            if (['.', '!', '?'].includes(char)) delay = 120; // Pause at end of sentence
+
+            setTimeout(typeNext, delay);
+        }
+
+        // --- Rich Media Rendering ---
+        function insertShimmer(alt) {
+            const container = document.getElementById('storyArea');
+            const shimId = 'shim_' + Date.now();
+            const shim = `
+                <div class="shimmer" id="${shimId}">
+                    <span class="shimmer-text">Generating illustration...</span>
+                    <span class="shimmer-alt">${alt}</span>
+                </div>`;
+            container.innerHTML += shim;
+            container.lastElementChild.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function replaceShimmer(b64, alt) {
+            const shimmers = document.querySelectorAll('.shimmer');
+            if (shimmers.length === 0) return;
+            
+            const shim = shimmers[shimmers.length - 1]; // Replace most recent
+            const img = new Image();
+            img.src = "data:image/png;base64," + b64;
+            img.className = 'story-image';
+            img.onload = () => {
+                shim.innerHTML = '';
+                shim.className = '';
+                shim.appendChild(img);
+                const caption = document.createElement('div');
+                caption.className = 'image-caption';
+                caption.innerText = alt;
+                shim.appendChild(caption);
+                setTimeout(() => img.style.opacity = '1', 10);
+            };
+        }
+
+        function insertAudio(desc) {
+            const container = document.getElementById('storyArea');
+            container.innerHTML += `
+                <div class="audio-badge">
+                   <span>♪</span> ${desc}
+                </div><br>`;
+        }
+
+        // --- Actions ---
+        function copyStory() {
+            navigator.clipboard.writeText(storyText);
+            alert("Story text copied to clipboard!");
+        }
+
+        function downloadStory() {
+            const blob = new Blob([storyText], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'gemini-story.txt';
+            a.click();
+        }
+
+    </script>
+</body>
+</html>

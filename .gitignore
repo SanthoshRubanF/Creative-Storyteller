@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# Logs
+*.log
+deploy_output.log
+server_diag.log
+
+# Temporary / OS
+.DS_Store
+Thumbs.db
+*.png
+*.webp
+*.mp4
+!frontend/assets/*.png
+!frontend/assets/*.webp
+
+# Project Specific
+gemini-storyteller/check_sdk.py
+gemini-storyteller/test_stream.py
+gemini-storyteller/test_image.png
+gemini-storyteller/deploy_output.log
+gemini-storyteller/server_diag.log

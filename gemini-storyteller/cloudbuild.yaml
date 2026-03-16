@@ -1,0 +1,36 @@
+steps:
+  # 1. Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/gemini-storyteller-repo/gemini-storyteller:${_SHORT_SHA}', '.']
+
+  # 2. Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/gemini-storyteller-repo/gemini-storyteller:${_SHORT_SHA}']
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'gemini-storyteller'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/gemini-storyteller-repo/gemini-storyteller:${_SHORT_SHA}'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
+      - '--timeout'
+      - '600'
+      - '--concurrency'
+      - '5'
+      - '--service-account'
+      - 'storyteller-sa@$PROJECT_ID.iam.gserviceaccount.com'
+      - '--set-env-vars'
+      - 'GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_CLOUD_LOCATION=us-central1'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/gemini-storyteller-repo/gemini-storyteller:${_SHORT_SHA}'
