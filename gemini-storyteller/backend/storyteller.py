@@ -132,7 +132,7 @@ async def generate_story_stream(
                         break
                         
     except Exception as e:
-        yield {"type": "error", "message": f"STORYTELLER_V10_ERROR: {str(e)}"}
+        yield {"type": "error", "message": f"STORYTELLER_V11_ERROR: {str(e)}"}
         return
 
     # Yield any remaining buffer as text (in case of unclosed markers at the end)

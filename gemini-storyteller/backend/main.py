@@ -68,7 +68,7 @@ async def story_stream(prompt: str, style: str = "Fantasy"):
     
     async def event_generator():
         # Immediate yield to establish connection
-        yield { "event": "status", "data": json.dumps({"type": "status", "message": "Connected v10..."}) }
+        yield { "event": "status", "data": json.dumps({"type": "status", "message": "Connected v11..."}) }
         
         queue = asyncio.Queue()
         
@@ -110,7 +110,7 @@ async def story_stream(prompt: str, style: str = "Fantasy"):
                             break
             except Exception as e:
                 logger.exception("Producer failed")
-                await queue.put({ "event": "error", "data": json.dumps({"type": "error", "message": f"STORYTELLER_V10_ERROR: {str(e)}"}) })
+                await queue.put({ "event": "error", "data": json.dumps({"type": "error", "message": f"STORYTELLER_V11_ERROR: {str(e)}"}) })
             finally:
                 await queue.put(None)
 
@@ -146,7 +146,7 @@ async def standalone_image_gen(request: ImageRequest):
 async def health_check():
     return {
         "status": "ok",
-        "model": "gemini-2.0-flash-exp",
+        "model": "gemini-1.5-flash",
         "image_model": "imagegeneration@006",
         "version": "1.0.0"
     }
