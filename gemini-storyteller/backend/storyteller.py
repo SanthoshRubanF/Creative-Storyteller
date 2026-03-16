@@ -42,7 +42,7 @@ STYLE GUIDE:
 - Noir: cynical, atmospheric, short sentences
 """
 
-MODEL = "gemini-2.0-flash"
+MODEL = "gemini-1.5-flash"
 
 # Client Setup
 use_vertex = os.getenv("GOOGLE_GENAI_USE_VERTEXAI", "FALSE").upper() == "TRUE"

@@ -1,0 +1,11 @@
+Checking live URL: https://gemini-storyteller-2320255921.us-central1.run.app/story/stream?prompt=Test&style=Fantasy
+HTTP Status: 200
+event: status
+data: {"type": "status", "message": "Connected v10..."}
+VERIFIED: Hitting V10 revision
+event: status
+data: {"type": "status", "message": "Writing..."}
+event: error
+ERROR DETECTED: event: error
+data: {"type": "error", "message": "STORYTELLER_V10_ERROR: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'Publisher Model `projects/gen-lang-client-0158119347/locations/us-central1/publishers/google/models/gemini-2.0-flash` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions', 'status': 'NOT_FOUND'}}"}
+ERROR DETECTED: data: {"type": "error", "message": "STORYTELLER_V10_ERROR: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'Publisher Model `projects/gen-lang-client-0158119347/locations/us-central1/publishers/google/models/gemini-2.0-flash` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions', 'status': 'NOT_FOUND'}}"}
